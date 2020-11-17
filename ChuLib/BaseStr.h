@@ -141,6 +141,64 @@ namespace Chu {
 			return *this;
 		}
 
+		[[nodiscard]] value_type& operator[](size_type index) const {
+			if (this->IsStatic()) {
+				return const_cast<value_type&>(this->data.staticData[index]);
+			}
+			return this->data.dynamicData[index];
+		}
+
+		BaseStr& operator+=(const BaseStr& add) {
+			const auto size = this->GetSize() + add.GetSize() + 1;
+			if (this->capacity < size && this->IsStatic()) {
+				this->capacity = size * 2;
+				auto* temp = Allocate(this->capacity);
+				for (auto i = 0u; i < MaxStaticSize; ++i) {
+					temp[i] = this->data.staticData[i];
+				}
+				std::swap(temp, this->data.dynamicData);
+			}
+
+			for (size_type i = this->GetSize(), j = 0u; i < size; ++i, ++j) {
+				(*this)[i] = add[j];
+			}
+			this->size = size;
+			(*this)[this->GetSize()] = '\0';
+			
+			return *this;
+		}
+
+		BaseStr& operator+=(const_array add) {
+			return *this += BaseStr(add);
+		}
+
+		BaseStr& operator+=(const value_type add) {
+			return *this += BaseStr(add, 1u);
+		}
+
+		friend BaseStr operator+(const BaseStr& first, const BaseStr& second) {
+			auto temp(first);
+			return temp += second;
+		}
+
+		friend BaseStr operator+(const BaseStr& first, const_array second) {
+			auto temp(first);
+			return temp += second;
+		}
+
+		friend BaseStr operator+(const_array first, const BaseStr& second) {
+			return BaseStr(first) += second;
+		}
+
+		friend BaseStr operator+(const BaseStr& first, const value_type second) {
+			auto temp(first);
+			return temp += second;
+		}
+
+		friend BaseStr operator+(const value_type first, const BaseStr& second) {
+			return BaseStr(first, 1u) += second;
+		}
+		
 		friend constexpr bool operator==(const BaseStr& first, const BaseStr& second) {
 			if (first.size != second.size) return false;
 
