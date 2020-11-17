@@ -104,6 +104,43 @@ namespace Chu {
 			return this->data.dynamicData;
 		}
 
+		BaseStr& operator=(const BaseStr& copy) noexcept {
+			if (copy == *this) return *this;
+			this->Delete();
+
+			this->size = copy.size;
+			if (this->size > MaxStaticSize) {
+				this->capacity = this->size * 2;
+				this->data.dynamicData = Allocate(this->capacity);
+			}
+			else {
+				this->capacity = MaxStaticSize;
+			}
+
+			for (auto i = 0u; i < this->GetSize(); ++i) {
+				(*this)[i] = copy[i];
+			}
+			(*this)[this->GetSize()] = '\0';
+
+			return *this;
+		}
+
+		BaseStr& operator=(BaseStr&& move) noexcept {
+
+			if (move == *this) return *this;
+			this->Delete();
+
+			this->size = move.size;
+			this->capacity = move.capacity;
+			this->data = move.data;
+
+			move.size = 1u;
+			move.capacity = MaxStaticSize;
+			move.data.dynamicData = nullptr;
+
+			return *this;
+		}
+
 		friend constexpr bool operator==(const BaseStr& first, const BaseStr& second) {
 			if (first.size != second.size) return false;
 
