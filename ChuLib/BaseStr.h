@@ -104,6 +104,10 @@ namespace Chu {
 			return this->data.dynamicData;
 		}
 
+		explicit operator const value_type*() const {
+			return this->GetCString();
+		}
+
 		BaseStr& operator=(const BaseStr& copy) noexcept {
 			if (copy == *this) return *this;
 			this->Delete();
