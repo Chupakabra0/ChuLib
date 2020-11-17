@@ -22,8 +22,8 @@ namespace Chu {
 	public:
 
 		BaseStr() {
-			this->size = 1u;
-			this->capacity = MaxStaticSize;
+			//this->size = 1u;
+			//this->capacity = MaxStaticSize;
 			this->data.staticData[this->GetSize()] = '\0';
 		}
 
@@ -291,7 +291,7 @@ namespace Chu {
 		friend std::basic_istream<Type>& operator>>(std::basic_istream<Type>& in, BaseStr& str) {
 			typename std::char_traits<Type>::char_type temp{};
 			// To skip Enter
-			while (in.get(temp) && temp == '\n');
+			while (in.get(temp) && temp == '\n') {}
 			
 			while (temp != '\n') {
 				str += temp;
@@ -308,8 +308,8 @@ namespace Chu {
 			pointer    dynamicData;
 		} data;
 
-		size_type size;
-		size_type capacity;
+		size_type size     = 1u;
+		size_type capacity = MaxStaticSize;
 
 		static pointer Allocate(const size_type capacity) {
 			if (capacity > 0u) {
@@ -331,9 +331,9 @@ namespace Chu {
 		}
 	};
 
-	using AsciiStr    = BaseStr<char, 24u>;
-	using UTF8Str     = BaseStr<char8_t, 24u>;
-	using UTF16Str    = BaseStr<char16_t, 24u>;
-	using UTF32Str    = BaseStr<char32_t, 24u>;
-	using UnicodeStr  = BaseStr<wchar_t, 24u>;
+	using AsciiStr    = BaseStr<char, 20u>;
+	using UTF8Str     = BaseStr<char8_t, 20u>;
+	using UTF16Str    = BaseStr<char16_t, 20u>;
+	using UTF32Str    = BaseStr<char32_t, 20u>;
+	using UnicodeStr  = BaseStr<wchar_t, 20u>;
 }
