@@ -104,6 +104,20 @@ namespace Chu {
 			return this->data.dynamicData;
 		}
 
+		friend constexpr bool operator==(const BaseStr& first, const BaseStr& second) {
+			if (first.size != second.size) return false;
+
+			for (auto i = 0u; i < first.size; ++i) {
+				if (first[i] != second[i]) {
+					return false;
+				}
+			}
+			return true;
+		}
+
+		friend constexpr bool operator!=(const BaseStr& first, const BaseStr& second) {
+			return !(first == second);
+		}
 		
 	private:
 		
