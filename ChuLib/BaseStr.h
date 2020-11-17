@@ -214,6 +214,23 @@ namespace Chu {
 			return !(first == second);
 		}
 		
+		friend std::ostream& operator<<(std::ostream& out, const BaseStr& str) {
+			return str.IsStatic() ? out << str.data.staticData : out << str.data.dynamicData;
+		}
+
+		friend std::istream& operator>>(std::istream& in, BaseStr& str) {
+			char temp;
+			// To skip Enter
+			while (in.get(temp) && temp == '\n');
+			
+			while (temp != '\n') {
+				str += temp;
+				in.get(temp);
+			}
+			str += '\0';
+			return in;
+		}
+		
 	private:
 		
 		union StrData {
