@@ -59,6 +59,72 @@ namespace Chu {
 			(*this)[this->GetSize()] = '\0';
 		}
 
+		BaseStr(std::initializer_list<BaseStr> list) {
+
+			//this->size = 1u;
+			
+			if (list.size() == 0) {
+				//this->size = 1u;
+				//this->capacity = MaxStaticSize;
+				this->data.staticData[this->GetSize()] = '\0';
+			}
+			else {
+
+				for (auto& i : list) {
+					this->size += i.GetSize();
+				}
+				
+				if (this->size > MaxStaticSize) {
+					this->capacity = this->size * 2;
+					this->data.dynamicData = Allocate(this->capacity);
+				}
+				else {
+					this->capacity = MaxStaticSize;
+				}
+
+				auto i = 0u;
+				for (auto& j : list) {
+					for (auto k = 0u; k < j.GetSize(); ++k, ++i) {
+						(*this)[i] = j[k];
+					}
+				}
+				(*this)[this->GetSize()] = '\0';
+			}
+		}
+
+		BaseStr(std::initializer_list<const char[]> list) {
+
+			//this->size = 1u;
+			
+			if (list.size() == 0) {
+				//this->size = 1u;
+				//this->capacity = MaxStaticSize;
+				this->data.staticData[this->GetSize()] = '\0';
+			}
+			else {
+
+				for (auto& i : list) {
+					this->size += strlen(i);
+				}
+
+				if (this->size > MaxStaticSize) {
+					this->capacity = this->size * 2;
+					this->data.dynamicData = Allocate(this->capacity);
+				}
+				else {
+					this->capacity = MaxStaticSize;
+				}
+
+				auto i = 0u;
+				for (auto& j : list) {
+					for (auto k = 0; k < strlen(j); ++k, ++i) {
+						(*this)[i] = j[k];
+					}
+				}
+				(*this)[this->GetSize()] = '\0';
+			}
+		}
+
 		BaseStr(const BaseStr& copy) noexcept {
 			this->size = copy.GetSize() + 1;
 			if (this->size > MaxStaticSize) {
